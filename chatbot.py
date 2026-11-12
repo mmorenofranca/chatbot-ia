@@ -14,8 +14,12 @@ while True:
         break
 
     historial.append({"role": "user", "content": pregunta})
-    respuesta = ollama.chat(model=MODELO, messages=historial)
-    texto = respuesta["message"]["content"]
-    historial.append({"role": "assistant", "content": texto})
+    print("\nBot: ", end="")
+    texto = ""
+    for parte in ollama.chat(model=MODELO, messages=historial, stream=True):
+        fragmento = parte["message"]["content"]
+        print(fragmento, end="", flush=True)
+        texto += fragmento
+    print("\n")
 
-    print(f"\nBot: {texto}\n")
+    historial.append({"role": "assistant", "content": texto})
